@@ -8,19 +8,18 @@ import {
   Alert,
   RefreshControl,
   ActivityIndicator,
-  Linking,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Card } from '../../components/ui';
+import { getInitials, handleCallPhone, handleWhatsApp } from '../../utils';
 import { useClientStore } from '../../stores/client.store';
 import { useAuthStore } from '../../stores/auth.store';
 import { colors, spacing, borderRadius, shadows } from '../../theme';
 import { typography } from '../../theme/typography';
 import type { Client } from '../../types';
 
-const ROWS_PER_PAGE_OPTIONS = [10, 20, 50];
 
 function ClientListScreen() {
   const navigation = useNavigation<any>();
@@ -45,21 +44,6 @@ function ClientListScreen() {
     [navigation],
   );
 
-  const handleCallPhone = useCallback((phone: string) => {
-    ReactNativeHapticFeedback.trigger('impactLight');
-    Linking.openURL(`tel:${phone}`).catch(() =>
-      Alert.alert('Error', 'Unable to make a phone call.'),
-    );
-  }, []);
-
-  const handleWhatsApp = useCallback((whatsapp: string) => {
-    ReactNativeHapticFeedback.trigger('impactLight');
-    const cleaned = whatsapp.replace(/[^0-9]/g, '');
-    Linking.openURL(`whatsapp://send?phone=${cleaned}`).catch(() =>
-      Alert.alert('Error', 'WhatsApp is not installed.'),
-    );
-  }, []);
-
   const handleNextPage = useCallback(() => {
     const totalPages = Math.ceil(total / rowsPerPage);
     if (page < totalPages) {
@@ -72,15 +56,6 @@ function ClientListScreen() {
       fetchClients(page - 1);
     }
   }, [page, fetchClients]);
-
-  const getInitials = useCallback((name: string) => {
-    return name
-      .split(' ')
-      .map((n) => n.charAt(0))
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  }, []);
 
   const renderClientCard = useCallback(
     ({ item, index }: { item: Client; index: number }) => (
@@ -142,7 +117,7 @@ function ClientListScreen() {
         </Card>
       </Animated.View>
     ),
-    [getInitials, handleWhatsApp, handleCallPhone, handleEditClient, isReadOnly],
+    [handleEditClient, isReadOnly],
   );
 
   const totalPages = Math.ceil(total / rowsPerPage);

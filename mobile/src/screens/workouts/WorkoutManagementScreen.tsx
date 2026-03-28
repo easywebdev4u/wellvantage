@@ -229,10 +229,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
-  sectionTitle: {
-    ...typography.bodyMedium,
-    color: colors.text,
-  },
   listContent: {
     paddingHorizontal: spacing.lg,
     paddingBottom: 100,
@@ -261,9 +257,6 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     padding: spacing.sm,
-  },
-  deleteIcon: {
-    fontSize: 18,
   },
   fab: {
     position: 'absolute',

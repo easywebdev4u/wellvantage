@@ -8,7 +8,6 @@ import {
   Param,
   Query,
   UseGuards,
-  ParseUUIDPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { WorkoutsService } from './workouts.service';

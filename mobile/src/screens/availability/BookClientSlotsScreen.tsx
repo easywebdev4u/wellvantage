@@ -399,9 +399,6 @@ const styles = StyleSheet.create({
   deleteButton: {
     padding: spacing.sm,
   },
-  deleteIcon: {
-    fontSize: 16,
-  },
   centered: {
     paddingVertical: spacing.xxxl,
     alignItems: 'center',

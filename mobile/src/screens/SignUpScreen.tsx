@@ -182,21 +182,6 @@ const styles = StyleSheet.create({
   logoContainer: {
     marginBottom: spacing.lg,
   },
-  logoCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.4)',
-  },
-  logoText: {
-    fontSize: 36,
-    fontWeight: '800',
-    color: colors.white,
-  },
   brandName: {
     fontSize: 32,
     fontWeight: '800',
@@ -270,11 +255,6 @@ const styles = StyleSheet.create({
     opacity: 0.85,
     transform: [{ scale: 0.98 }],
     backgroundColor: colors.background,
-  },
-  googleIcon: {
-    width: 22,
-    height: 22,
-    marginRight: spacing.md,
   },
   googleButtonText: {
     ...typography.button,

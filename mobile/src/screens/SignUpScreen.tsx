@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -21,9 +21,9 @@ import { colors, spacing, borderRadius, shadows } from '../theme';
 import { typography } from '../theme/typography';
 import { Config } from '../utils/config';
 import { logError } from '../utils';
+import { WellVantageLogo } from '../components/ui';
+import GoogleLogo from '../components/ui/GoogleLogo';
 import type { AuthResponse } from '../types';
-
-const GOOGLE_ICON = 'https://developers.google.com/identity/images/g-logo.png';
 
 GoogleSignin.configure({
   iosClientId: Config.GOOGLE_IOS_CLIENT_ID || '',
@@ -92,9 +92,7 @@ export default function SignUpScreen() {
       >
         <View style={[styles.topContent, { paddingTop: insets.top + spacing.xxxxl }]}>
           <Animated.View style={[styles.logoContainer, logoAnimStyle]}>
-            <View style={styles.logoCircle}>
-              <Text style={styles.logoText}>W</Text>
-            </View>
+            <WellVantageLogo size={72} />
           </Animated.View>
 
           <Animated.Text
@@ -143,10 +141,7 @@ export default function SignUpScreen() {
               pressed && styles.googleButtonPressed,
             ]}
           >
-            <Image
-              source={{ uri: GOOGLE_ICON }}
-              style={styles.googleIcon}
-            />
+            <GoogleLogo size={22} />
             <Text style={styles.googleButtonText}>Continue with Google</Text>
           </Pressable>
         </Animated.View>

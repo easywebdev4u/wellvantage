@@ -187,13 +187,17 @@ npx prisma studio          # Visual DB browser
 npx prisma migrate dev     # Create migration
 ```
 
-## Architecture Decisions
+## Architecture
 
-- **1-row repeat rules** — recurring availability stored as a single DB row with `repeatFrequency` + `repeatUntil`, expanded to virtual dates on read
-- **Monthly data fetching** — calendar screens fetch only the visible month's data via date range API
+For a deep dive into system design, data flows, security model, database schema, and scalability considerations, see **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
+
+Key decisions:
+- **1-row repeat rules** — recurring availability stored as a single DB row, expanded to virtual dates on read
+- **Monthly data fetching** — calendar screens fetch only the visible month via date range API
 - **Zustand over Redux** — lightweight, no boilerplate, perfect for this scale
-- **KeyboardScrollView** — shared component for consistent keyboard handling across all screens
-- **SVG icons** — custom `react-native-svg` icons instead of icon font libraries (smaller bundle)
+- **Modular monolith** — NestJS modules with clean boundaries, ready to extract into microservices
+- **Two-layer authorization** — RBAC guards at controller level + ownership checks at service level
+- **SVG icons** — custom `react-native-svg` components instead of icon font libraries
 
 ## License
 

@@ -7,3 +7,4 @@ export { default as TrashIcon } from './TrashIcon';
 export { default as CalendarIcon } from './CalendarIcon';
 export { default as KeyboardScrollView } from './KeyboardScrollView';
 export { default as MenuIcon } from './MenuIcon';
+export { default as WellVantageLogo } from './WellVantageLogo';

@@ -1,0 +1,172 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  TRAINER
+  CLIENT
+}
+
+enum SlotStatus {
+  OPEN
+  BOOKED
+  CANCELLED
+}
+
+enum SessionStatus {
+  UPCOMING
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  avatarUrl String?
+  role      Role     @default(TRAINER)
+  googleId  String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  workoutPlans   WorkoutPlan[]
+  trainedClients Client[]      @relation("TrainerClients")
+  clientProfile  Client?       @relation("UserClient")
+  availability   Availability[]
+  trainerSessions Session[]    @relation("TrainerSessions")
+
+  @@index([email])
+  @@index([googleId])
+}
+
+model WorkoutPlan {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  days        Int
+  isPrebuilt  Boolean  @default(false)
+  trainerId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  trainer     User          @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  workoutDays WorkoutDay[]
+  clients     Client[]
+
+  @@index([trainerId])
+}
+
+model WorkoutDay {
+  id            String   @id @default(uuid())
+  dayNumber     Int
+  muscleGroup   String
+  workoutPlanId String
+
+  workoutPlan WorkoutPlan @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
+  exercises   Exercise[]
+
+  @@unique([workoutPlanId, dayNumber])
+  @@index([workoutPlanId])
+}
+
+model Exercise {
+  id           String  @id @default(uuid())
+  name         String
+  sets         Int
+  reps         Int?
+  duration     String?
+  order        Int
+  workoutDayId String
+
+  workoutDay WorkoutDay @relation(fields: [workoutDayId], references: [id], onDelete: Cascade)
+
+  @@index([workoutDayId])
+}
+
+model Client {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  trainerId         String
+  workoutPlanId     String?
+  planName          String?
+  totalSessions     Int      @default(0)
+  sessionsRemaining Int      @default(0)
+  phone             String?
+  whatsapp          String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user        User         @relation("UserClient", fields: [userId], references: [id], onDelete: Cascade)
+  trainer     User         @relation("TrainerClients", fields: [trainerId], references: [id], onDelete: Cascade)
+  workoutPlan WorkoutPlan? @relation(fields: [workoutPlanId], references: [id], onDelete: SetNull)
+  bookings    BookingSlot[]
+  sessions    Session[]
+
+  @@index([trainerId])
+  @@index([workoutPlanId])
+}
+
+enum RepeatFrequency {
+  DAILY
+  WEEKLY
+}
+
+model Availability {
+  id              String           @id @default(uuid())
+  trainerId       String
+  date            DateTime         @db.Date
+  startTime       String
+  endTime         String
+  isRepeat        Boolean          @default(false)
+  repeatFrequency RepeatFrequency?
+  repeatUntil     DateTime?        @db.Date
+  sessionName     String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  trainer User          @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  slots   BookingSlot[]
+
+  @@index([trainerId, date])
+}
+
+model BookingSlot {
+  id             String     @id @default(uuid())
+  availabilityId String
+  clientId       String?
+  status         SlotStatus @default(OPEN)
+  bookedAt       DateTime?
+
+  availability Availability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+  client       Client?      @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  @@index([availabilityId])
+  @@index([clientId])
+  @@index([status])
+}
+
+model Session {
+  id        String        @id @default(uuid())
+  trainerId String
+  clientId  String
+  date      DateTime      @db.Date
+  startTime String
+  endTime   String
+  status    SessionStatus @default(UPCOMING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  trainer User   @relation("TrainerSessions", fields: [trainerId], references: [id], onDelete: Cascade)
+  client  Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([trainerId, date])
+  @@index([clientId])
+  @@index([status])
+  @@index([trainerId, date, status])
+}
